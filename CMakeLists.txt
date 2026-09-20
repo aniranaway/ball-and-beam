@@ -61,6 +61,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     App/Inc
     External/VL53L0X/core/inc
     External/VL53L0X/platform/inc
+    Common/Inc
 )
 
 # Add project symbols (macros)
