@@ -1,0 +1,9 @@
+build/
+CMakeFiles/
+.ninja_*
+*.elf
+*.hex
+*.bin
+mx.scratch
+.settings/
+.vscode/
