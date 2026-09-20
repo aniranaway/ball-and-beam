@@ -10,7 +10,7 @@
 typedef enum SYS_ERRORS{
     AR_STATUS_OK,                 /**< Valid Status */
     AR_STATUS_ERROR,              /**< Error Status */
-}sys_errors_t;
+}SYS_ERRORS_t;
 
 
 
