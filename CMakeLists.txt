@@ -53,6 +53,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     External/VL53L0X/core/src/vl53l0x_api.c
     External/VL53L0X/platform/src/vl53l0x_platform.c
     BSP/Src/bsp_i2c.c
+    Devices/Src/vl53l0x_driver.c
 )
 
 # Add include paths
@@ -63,6 +64,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     External/VL53L0X/platform/inc
     Common/Inc
     BSP/Inc
+    Devices/Inc
 )
 
 # Add project symbols (macros)
