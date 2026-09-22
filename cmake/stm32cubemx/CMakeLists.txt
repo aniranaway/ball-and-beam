@@ -11,21 +11,22 @@ set(MX_Defines_Syms
 # STM32CubeMX generated include paths
 set(MX_Include_Dirs
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_HOST/App
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_HOST/Target
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_DEVICE/App
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_DEVICE/Target
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32L4xx_HAL_Driver/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32L4xx_HAL_Driver/Inc/Legacy
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Host_Library/Core/Inc
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Host_Library/Class/CDC/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Device_Library/Core/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/CMSIS/Device/ST/STM32L4xx/Include
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/CMSIS/Include
 )
 
 # STM32CubeMX generated application sources
 set(MX_Application_Src
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_HOST/Target/usbh_conf.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_HOST/Target/usbh_platform.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_HOST/App/usb_host.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_DEVICE/Target/usbd_conf.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_DEVICE/App/usb_device.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_DEVICE/App/usbd_desc.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../USB_DEVICE/App/usbd_cdc_if.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/main.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/gpio.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/i2c.c
@@ -44,7 +45,8 @@ set(MX_Application_Src
 # STM32 HAL/LL Drivers
 set(STM32_Drivers_Src
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Core/Src/system_stm32l4xx.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_hcd.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_pcd_ex.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_ll_usb.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal.c
     ${CMAKE_CURRENT_SOURCE_DIR}/../../Drivers/STM32L4xx_HAL_Driver/Src/stm32l4xx_hal_rcc.c
@@ -74,12 +76,11 @@ set(STM32_Drivers_Src
 # Drivers Midllewares
 
 
-set(USB_Host_Library_Src
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_core.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ctlreq.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_ioreq.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Host_Library/Core/Src/usbh_pipes.c
-    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Host_Library/Class/CDC/Src/usbh_cdc.c
+set(USB_Device_Library_Src
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_core.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Device_Library/Core/Src/usbd_ioreq.c
+    ${CMAKE_CURRENT_SOURCE_DIR}/../../Middlewares/ST/STM32_USB_Device_Library/Class/CDC/Src/usbd_cdc.c
 )
 
 # Link directories setup
@@ -90,7 +91,7 @@ set(MX_LINK_DIRS
 set(MX_LINK_LIBS 
     STM32_Drivers
     ${TOOLCHAIN_LINK_LIBRARIES}
-    USB_Host_Library	
+    USB_Device_Library	
 )
 # Interface library for includes and symbols
 add_library(stm32cubemx INTERFACE)
@@ -103,10 +104,10 @@ target_sources(STM32_Drivers PRIVATE ${STM32_Drivers_Src})
 target_link_libraries(STM32_Drivers PUBLIC stm32cubemx)
 
 
-# Create USB_Host_Library static library
-add_library(USB_Host_Library OBJECT)
-target_sources(USB_Host_Library PRIVATE ${USB_Host_Library_Src})
-target_link_libraries(USB_Host_Library PUBLIC stm32cubemx)
+# Create USB_Device_Library static library
+add_library(USB_Device_Library OBJECT)
+target_sources(USB_Device_Library PRIVATE ${USB_Device_Library_Src})
+target_link_libraries(USB_Device_Library PUBLIC stm32cubemx)
 
 # Add STM32CubeMX generated application sources to the project
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE ${MX_Application_Src})

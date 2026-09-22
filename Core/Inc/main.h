@@ -175,8 +175,6 @@ void Error_Handler(void);
 #define OTG_FS_OverCurrent_GPIO_Port GPIOC
 #define OTG_FS_VBUS_Pin GPIO_PIN_11
 #define OTG_FS_VBUS_GPIO_Port GPIOC
-#define EXT_RST_Pin GPIO_PIN_0
-#define EXT_RST_GPIO_Port GPIOD
 #define MEMS_SCK_Pin GPIO_PIN_1
 #define MEMS_SCK_GPIO_Port GPIOD
 #define GYRO_INT1_Pin GPIO_PIN_2
