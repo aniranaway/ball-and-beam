@@ -14,6 +14,7 @@
 
 extern I2C_HandleTypeDef hi2c1;
 extern UART_HandleTypeDef huart2;
+extern TIM_HandleTypeDef htim2;
 
 #define VL53L0X_I2C_ADDRESS  (0x29 << 1)
 
@@ -22,6 +23,8 @@ VL53L0X_Dev_t   VL53L0X_Sensor  = {.bsp_handle = &i2cHandle};
 volatile uint8_t vl53l0x_data_ready = 0;
 uint16_t distance_mm = 0;
 uint32_t last_log_time = 0;
+
+
 void App_Init(void)
 {
     vl53l0x_driver_init(&VL53L0X_Sensor);
@@ -31,6 +34,7 @@ void App_Run(void)
 {
     while(1)
     {
+
         if (vl53l0x_data_ready == 1)
         {
             vl53l0x_data_ready = 0;
