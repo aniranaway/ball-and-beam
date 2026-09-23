@@ -43,7 +43,7 @@ void App_Run(void)
             last_log_time = HAL_GetTick();
             char tx_buffer[50];
             int len = snprintf(tx_buffer, sizeof(tx_buffer), "Distance: %u mm\r\n", distance_mm);
-            HAL_UART_Transmit(&huart2, (uint8_t*)tx_buffer, len, 10); // short timeout
+            HAL_UART_Transmit(&huart2, (uint8_t*)tx_buffer, len, 10); 
         }
         }
     }
