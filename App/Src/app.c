@@ -38,7 +38,7 @@ void App_Run(void)
             {
                 
             }
-        if (HAL_GetTick() - last_log_time >= 100) // Log every 100ms
+        if (HAL_GetTick() - last_log_time >= 100)
         {
             last_log_time = HAL_GetTick();
             char tx_buffer[50];
