@@ -3,9 +3,11 @@
     *@brief     Application Implementation
     *@author    Anish Rangarajan
 */
+#include "bsp_timer.h"
 #include "i2c.h"
 #include "main.h"
 #include "bsp_i2c.h"
+#include "servo.h"
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_gpio.h"
 #include "sysErrors.h"
@@ -18,66 +20,48 @@ extern TIM_HandleTypeDef htim2;
 
 #define VL53L0X_I2C_ADDRESS  (0x29 << 1)
 
-BSP_I2C_Handle_t i2cHandle      = {.i2c_reference = &hi2c1, .i2c_address = VL53L0X_I2C_ADDRESS};
+/* BSP Global Declarations */
+BSP_I2C_Handle_t i2c_handle      = {.i2c_reference = &hi2c1, .i2c_address = VL53L0X_I2C_ADDRESS};
+BSP_Timer_Handle_t timer_handle  = {.timer_ref = &htim2, .timer_channel = TIM_CHANNEL_1};
 
-VL53L0X_Dev_t   VL53L0X_Sensor  = {.bsp_handle = &i2cHandle};
+/* Device Declarations */
+VL53L0X_Dev_t   VL53L0X_Sensor  = {.bsp_handle = &i2c_handle};
+Servo_Handle_t  servo_handle = {.timerHandle = &timer_handle};
+
 volatile uint8_t vl53l0x_data_ready = 0;
 uint16_t distance_mm = 0;
 uint32_t last_log_time = 0;
 
-uint32_t last_sweep_time = 0;
-uint32_t sweep_interval = 15;  
-uint16_t current_pulse = 1500;    
-int8_t sweep_direction = 1;      
-int16_t step_size = 10;
+uint16_t calibrationSamples = 0;
+float calibrationValues = 0;
+uint16_t setPoint = 0;
 
 void App_Init(void)
 {
     vl53l0x_driver_init(&VL53L0X_Sensor);
-    HAL_TIM_PWM_Start(&htim2, TIM_CHANNEL_1);
+    servo_init(&servo_handle);
+
+
 }
 
 void App_Run(void)
 {
     while(1)
     {   
-        if (HAL_GetTick() - last_sweep_time >= sweep_interval)
-            {
-                last_sweep_time = HAL_GetTick();
-
-                // Update pulse position
-                current_pulse += (sweep_direction * step_size);
-
-                // Constrain sweep strictly between 0° (500 ticks) and 180° (2500 ticks)
-                if (current_pulse >= 2500)
-                {
-                    current_pulse = 2500;
-                    sweep_direction = -1; // Reverse back toward 0 degrees
-                }
-                else if (current_pulse <= 500)
-                {
-                    current_pulse = 500;
-                    sweep_direction = 1;  // Reverse toward 180 degrees
-                }
-
-                // Apply the new pulse value
-                __HAL_TIM_SET_COMPARE(&htim2, TIM_CHANNEL_1, current_pulse);
-            }
-            
+          
         if (vl53l0x_data_ready == 1)
         {
             vl53l0x_data_ready = 0;
-            if (vl53l0x_driver_get_Readings(&VL53L0X_Sensor, &distance_mm) == AR_STATUS_OK)
-            {
-                
-            }
+            vl53l0x_driver_get_Readings(&VL53L0X_Sensor, &distance_mm);
+            
+        }
+        
         if (HAL_GetTick() - last_log_time >= 100)
         {
             last_log_time = HAL_GetTick();
             char tx_buffer[50];
-            int len = snprintf(tx_buffer, sizeof(tx_buffer), "Distance: %u mm\r\n", distance_mm);
+            int len = snprintf(tx_buffer, sizeof(tx_buffer), "SetPoint: %u mm | Distance: %u mm\r\n", setPoint, distance_mm);
             HAL_UART_Transmit(&huart2, (uint8_t*)tx_buffer, len, 10); 
-        }
         }
     }
 }
