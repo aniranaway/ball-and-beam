@@ -5,10 +5,20 @@
 */
 
 #include "bsp_timer.h"
+#include "stm32l476xx.h"
 #include "stm32l4xx_hal.h"
 #include "stm32l4xx_hal_def.h"
 #include "sysErrors.h"
 #include <stdint.h>
+
+extern TIM_HandleTypeDef htim2;
+
+SYS_ERRORS_t bsp_timer_Init(BSP_Timer_Handle_t *timer_handle){
+    switch (timer_handle->timer_bus) {
+        case TIMER_BUS_2: timer_handle->timer_ref = &htim2;
+                        break;
+    }
+}
 
 SYS_ERRORS_t bsp_pwm_start(BSP_Timer_Handle_t *bsp_timer_handle){
     HAL_StatusTypeDef status;

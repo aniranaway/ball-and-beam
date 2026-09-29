@@ -9,7 +9,6 @@
 
 #include "sysErrors.h"
 #include <stdint.h>
-#include "main.h"
 #include "bsp_timer.h"
 
 #define     SERVO_ZERO_PULSE            500

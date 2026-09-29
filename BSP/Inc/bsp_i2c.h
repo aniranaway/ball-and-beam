@@ -9,15 +9,27 @@
 #include <stdint.h>
 #include "sysErrors.h"
 
+#define I2C_BUS_1       (0x00)
+#define I2C_BUS_2       (0x01)
+#define I2C_BUS_3       (0x02)
 
 /**
  * @brief I2C struct handle.
  */
 
-typedef struct {
+typedef struct 
+{
+    uint8_t i2c_bus;
     void    *i2c_reference;     /**< Generic pointer to the underlying hardware handle */
     uint8_t i2c_address;        /**< Target device I2C address */
 } BSP_I2C_Handle_t;
+
+
+/**
+ * @brief   I2C Init function.
+ * @return  SYS_ERRORS_t  AR_STATUS_OK on success, or AR_STATUS_ERROR on failure.
+ */
+SYS_ERRORS_t bsp_i2c_Init(BSP_I2C_Handle_t *i2c_handle);
 
 
 /**

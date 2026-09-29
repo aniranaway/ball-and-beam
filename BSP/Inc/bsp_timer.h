@@ -9,6 +9,9 @@
 #include <stdint.h>
 #include "sysErrors.h"
 
+#define TIMER_BUS_1       (0x00)
+#define TIMER_BUS_2       (0x01)
+#define TIMER_BUS_3       (0x02)
 
 /**
  * @brief Timer struct handle.
@@ -16,9 +19,16 @@
 
 typedef struct {
     void    *timer_ref;     /**< Generic pointer to the underlying hardware handle */
+    uint8_t  timer_bus;
     uint32_t timer_channel;    /**< Timer Channel */
 } BSP_Timer_Handle_t;
 
+
+/**
+ * @brief   Timer Init function.
+ * @return  SYS_ERRORS_t  AR_STATUS_OK on success, or AR_STATUS_ERROR on failure.
+ */
+SYS_ERRORS_t bsp_timer_Init(BSP_Timer_Handle_t *timer_handle);
 
 /**
  * @brief   Timer function to start pwm.
