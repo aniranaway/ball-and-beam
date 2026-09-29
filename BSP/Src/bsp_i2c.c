@@ -7,7 +7,6 @@
 
 #include "bsp_i2c.h"
 #include "stm32l4xx_hal.h"
-#include "stm32l4xx_hal_i2c.h"
 #include "sysErrors.h"
 
 extern I2C_HandleTypeDef hi2c1;
@@ -19,7 +18,10 @@ SYS_ERRORS_t bsp_i2c_Init(BSP_I2C_Handle_t *i2c_handle){
                         break;
         case I2C_BUS_2: i2c_handle->i2c_reference = &hi2c2;
                         break;
+        default:
+            return AR_STATUS_ERROR;
     }
+    return AR_STATUS_OK;
 }
 
 SYS_ERRORS_t bsp_i2c_Read_Register(BSP_I2C_Handle_t *i2c_handle, uint8_t start_reg, uint8_t *read_buffer ,uint16_t byte_count){

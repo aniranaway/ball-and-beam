@@ -54,6 +54,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     External/VL53L0X/platform/src/vl53l0x_platform.c
     BSP/Src/bsp_i2c.c
     BSP/Src/bsp_timer.c
+    BSP/Src/bsp_uart.c
     Devices/Src/vl53l0x_driver.c
     Devices/Src/servo.c
 )

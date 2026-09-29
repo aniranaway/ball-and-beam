@@ -19,12 +19,19 @@ SYS_ERRORS_t bsp_timer_Init(BSP_Timer_Handle_t *timer_handle){
     switch (timer_handle->timer_bus) {
         case TIMER_BUS_2: timer_handle->timer_ref = &htim2;
                         break;
+        default:
+            return AR_STATUS_ERROR;
     }
+   
 
     switch (timer_handle->pwm_channel) {
         case PWM_CHANNEL_1: timer_handle->timer_channel = TIM_CHANNEL_1;
                         break;
+        default:
+            return AR_STATUS_ERROR;
     }
+
+    return AR_STATUS_OK;;
 }
 
 SYS_ERRORS_t bsp_pwm_start(BSP_Timer_Handle_t *bsp_timer_handle){
