@@ -10,6 +10,7 @@
 #include "vl53l0x_platform.h"
 #include "sysErrors.h"
 
+#define VL53L0X_I2C_ADDRESS  (0x29 << 1)
 
 /**
  * @brief   Vl53l0x initialization function.

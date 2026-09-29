@@ -4,44 +4,40 @@
     *@author    Anish Rangarajan
 */
 #include "bsp_timer.h"
-#include "i2c.h"
-#include "main.h"
 #include "bsp_i2c.h"
 #include "servo.h"
-#include "stm32l4xx_hal.h"
-#include "stm32l4xx_hal_gpio.h"
-#include "sysErrors.h"
-#include "vl53l0x_platform.h"
 #include "vl53l0x_driver.h"
 
-extern I2C_HandleTypeDef hi2c1;
-extern UART_HandleTypeDef huart2;
-extern TIM_HandleTypeDef htim2;
 
-#define VL53L0X_I2C_ADDRESS  (0x29 << 1)
+extern UART_HandleTypeDef huart2;
+
+
 
 /* BSP Global Declarations */
-BSP_I2C_Handle_t i2c_handle      = {.i2c_reference = &hi2c1, .i2c_address = VL53L0X_I2C_ADDRESS};
-BSP_Timer_Handle_t timer_handle  = {.timer_ref = &htim2, .timer_channel = TIM_CHANNEL_1};
+BSP_I2C_Handle_t    i2c_handle    = {.i2c_bus = I2C_BUS_1, .i2c_address = VL53L0X_I2C_ADDRESS};
+BSP_Timer_Handle_t  timer_handle  = {.timer_bus = TIMER_BUS_2, .pwm_channel = PWM_CHANNEL_1};
 
 /* Device Declarations */
 VL53L0X_Dev_t   VL53L0X_Sensor  = {.bsp_handle = &i2c_handle};
-Servo_Handle_t  servo_handle = {.timerHandle = &timer_handle};
+Servo_Handle_t  servo_handle    = {.timerHandle = &timer_handle};
+
 
 volatile uint8_t vl53l0x_data_ready = 0;
 uint16_t distance_mm = 0;
 uint32_t last_log_time = 0;
-
 uint16_t calibrationSamples = 0;
 float calibrationValues = 0;
 uint16_t setPoint = 0;
 
 void App_Init(void)
 {
+    /* Comms Initialization */
+    bsp_i2c_Init(&i2c_handle);
+    bsp_timer_Init(&timer_handle);
+
+    /* Device Initialization */
     vl53l0x_driver_init(&VL53L0X_Sensor);
     servo_init(&servo_handle);
-
-
 }
 
 void App_Run(void)
@@ -56,9 +52,9 @@ void App_Run(void)
             
         }
         
-        if (HAL_GetTick() - last_log_time >= 100)
+        if (bsp_get_millis() - last_log_time >= 100)
         {
-            last_log_time = HAL_GetTick();
+            last_log_time = bsp_get_millis();
             char tx_buffer[50];
             int len = snprintf(tx_buffer, sizeof(tx_buffer), "SetPoint: %u mm | Distance: %u mm\r\n", setPoint, distance_mm);
             HAL_UART_Transmit(&huart2, (uint8_t*)tx_buffer, len, 10); 

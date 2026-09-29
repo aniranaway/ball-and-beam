@@ -13,6 +13,8 @@
 #define TIMER_BUS_2       (0x01)
 #define TIMER_BUS_3       (0x02)
 
+#define PWM_CHANNEL_1       (0x00)
+
 /**
  * @brief Timer struct handle.
  */
@@ -20,6 +22,7 @@
 typedef struct {
     void    *timer_ref;     /**< Generic pointer to the underlying hardware handle */
     uint8_t  timer_bus;
+    uint8_t  pwm_channel;
     uint32_t timer_channel;    /**< Timer Channel */
 } BSP_Timer_Handle_t;
 
@@ -49,5 +52,17 @@ SYS_ERRORS_t bsp_pwm_start(BSP_Timer_Handle_t *timer_handle);
  * @return  SYS_ERRORS_t  AR_STATUS_OK on success, or AR_STATUS_ERROR on failure.
  */
 SYS_ERRORS_t bsp_duty_cycle_set(BSP_Timer_Handle_t *timer_handle, uint16_t pulse);
+
+
+/**
+ * @brief   Get Millis().
+ * 
+ * 
+ * @return  uint32  current tick in milliseconds.
+ */
+uint32_t bsp_get_millis();
+
+
+
 
 #endif
