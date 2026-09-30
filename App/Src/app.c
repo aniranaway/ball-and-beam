@@ -8,8 +8,9 @@
 #include "bsp_uart.h"
 #include "bsp_gpio.h"
 #include "servo.h"
+#include "pid.h"
 #include "sysErrors.h"
-#include "vl53l0x_driver.h"
+#include "vl53l0x_driver.h" 
 #include <stdio.h>
 
 /* BSP Global Declarations */
@@ -25,6 +26,10 @@ Servo_Handle_t  servo_handle    = {.timerHandle = &timer_handle};
 uint32_t last_log_time = 0;
 SYS_ERRORS_t status = AR_STATUS_OK;
 
+
+/*Control Declarations*/
+PID_Handle_t beam_control = {.Kp = 0.3f, .Ki = 0.0f, .Kd = 0.3f, .set_point = 85, .prev_measure = 0};
+
 void App_Init(void)
 {
     /* Comms Initialization - Halt immediately if hardware fails to start */
@@ -37,23 +42,23 @@ void App_Init(void)
     /* Device Initialization */
     if (vl53l0x_driver_init(&VL53L0X_Sensor) != AR_STATUS_OK) status = AR_STATUS_ERROR;
     if (servo_init(&servo_handle) != AR_STATUS_OK)              status = AR_STATUS_ERROR;
+
+
 }
 
 void App_Run(void)
 {
     while(status ==  AR_STATUS_OK)
     {   
-          
+
         if (VL53L0X_Sensor.vl53l0x_data_ready == 1)
         {
             VL53L0X_Sensor.vl53l0x_data_ready = 0;
             status = vl53l0x_driver_get_Readings(&VL53L0X_Sensor);
             if (status == AR_STATUS_OK) 
             {
-                if(VL53L0X_Sensor.distance_mm > 95)
-                    status = servo_move(&servo_handle, 75);
-                else
-                    status = servo_move(&servo_handle, 95);
+                
+                status = servo_move(&servo_handle, 90 + PID_Compute(&beam_control, VL53L0X_Sensor.distance_mm));
             }    
             
         }

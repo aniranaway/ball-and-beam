@@ -58,6 +58,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     BSP/Src/bsp_gpio.c
     Devices/Src/vl53l0x_driver.c
     Devices/Src/servo.c
+    Controls/Src/pid.c
 )
 
 # Add include paths
@@ -69,6 +70,7 @@ target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     Common/Inc
     BSP/Inc
     Devices/Inc
+    Controls/Inc
 )
 
 # Add project symbols (macros)

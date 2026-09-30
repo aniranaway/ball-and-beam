@@ -40,5 +40,9 @@ SYS_ERRORS_t servo_move(Servo_Handle_t *servo_handle, float angle)
     if (angle > 180.0f) angle = 180.0f;
     servo_handle->servoAngle = angle;
     uint16_t pulse = servo_angle_to_pulse(angle);
+
+    if(pulse > SERVO_END_PULSE) pulse = SERVO_END_PULSE;
+    if(pulse < SERVO_ZERO_PULSE) pulse = SERVO_ZERO_PULSE;
+
     return bsp_duty_cycle_set(servo_handle->timerHandle, pulse);
 }
