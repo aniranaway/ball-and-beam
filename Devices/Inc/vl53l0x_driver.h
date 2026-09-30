@@ -29,7 +29,7 @@ SYS_ERRORS_t vl53l0x_driver_init(VL53L0X_Dev_t *vl53l0x_handle);
  * 
  * @return  SYS_ERRORS_t  AR_STATUS_OK on success, or AR_STATUS_ERROR on failure.
  */
-SYS_ERRORS_t vl53l0x_driver_get_Readings(VL53L0X_Dev_t *vl53l0x_handle, uint16_t *distance_mm);
+SYS_ERRORS_t vl53l0x_driver_get_Readings(VL53L0X_Dev_t *vl53l0x_handle);
 
 
 /**

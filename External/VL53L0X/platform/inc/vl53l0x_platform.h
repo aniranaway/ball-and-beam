@@ -60,6 +60,7 @@ typedef struct {
     VL53L0X_DevData_t Data;              
     volatile uint8_t vl53l0x_data_ready;
     void      *bsp_handle;
+    uint16_t  distance_mm;
 } VL53L0X_Dev_t;
 
 

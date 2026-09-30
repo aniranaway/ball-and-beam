@@ -47,14 +47,14 @@ SYS_ERRORS_t vl53l0x_driver_init(VL53L0X_Dev_t *vl53l0x_handle)
 }
 
 
-SYS_ERRORS_t vl53l0x_driver_get_Readings(VL53L0X_Dev_t *vl53l0x_handle, uint16_t *distance_mm){
+SYS_ERRORS_t vl53l0x_driver_get_Readings(VL53L0X_Dev_t *vl53l0x_handle){
     VL53L0X_Error status = VL53L0X_ERROR_NONE;
     VL53L0X_RangingMeasurementData_t RangingMeasurementData;
 
     status = VL53L0X_GetRangingMeasurementData(vl53l0x_handle, &RangingMeasurementData);
     if(status!= VL53L0X_ERROR_NONE){return AR_STATUS_ERROR;}
 
-    *distance_mm = RangingMeasurementData.RangeMilliMeter;
+    vl53l0x_handle->distance_mm = RangingMeasurementData.RangeMilliMeter;
 
    status = VL53L0X_ClearInterruptMask(vl53l0x_handle, VL53L0X_REG_SYSTEM_INTERRUPT_GPIO_NEW_SAMPLE_READY);
     if(status != VL53L0X_ERROR_NONE) { return AR_STATUS_ERROR; }
