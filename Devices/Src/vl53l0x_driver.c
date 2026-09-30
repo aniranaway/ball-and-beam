@@ -61,3 +61,7 @@ SYS_ERRORS_t vl53l0x_driver_get_Readings(VL53L0X_Dev_t *vl53l0x_handle, uint16_t
 
     return AR_STATUS_OK; 
 }
+
+void On_Sensor_Data_Ready(void *vl53l0x_handle) {
+    ((VL53L0X_Dev_t *)vl53l0x_handle)->vl53l0x_data_ready = 1;
+}

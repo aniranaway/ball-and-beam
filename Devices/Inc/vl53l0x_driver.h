@@ -32,6 +32,11 @@ SYS_ERRORS_t vl53l0x_driver_init(VL53L0X_Dev_t *vl53l0x_handle);
 SYS_ERRORS_t vl53l0x_driver_get_Readings(VL53L0X_Dev_t *vl53l0x_handle, uint16_t *distance_mm);
 
 
+/**
+ * @brief   Vl53l0x interrupt flag trigger.
+ * @param   vl53l0x_handle   Pointer to the BSP I2C handle structure.
+ */
+void On_Sensor_Data_Ready(void *vl53l0x_handle);
 
 
 

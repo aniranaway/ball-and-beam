@@ -44,7 +44,7 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
-    # Add user sources here
+    # Add user sources here 
     App/Src/app.c
     External/VL53L0X/core/src/vl53l0x_api_calibration.c
     External/VL53L0X/core/src/vl53l0x_api_core.c
@@ -55,6 +55,7 @@ target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     BSP/Src/bsp_i2c.c
     BSP/Src/bsp_timer.c
     BSP/Src/bsp_uart.c
+    BSP/Src/bsp_gpio.c
     Devices/Src/vl53l0x_driver.c
     Devices/Src/servo.c
 )
