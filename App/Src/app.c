@@ -9,6 +9,7 @@
 #include "bsp_gpio.h"
 #include "servo.h"
 #include "pid.h"
+#include "pid.h"
 #include "sysErrors.h"
 #include "vl53l0x_driver.h" 
 #include <stdio.h>
@@ -44,6 +45,8 @@ void App_Init(void)
     if (servo_init(&servo_handle) != AR_STATUS_OK)              status = AR_STATUS_ERROR;
 
 
+
+
 }
 
 void App_Run(void)
@@ -51,12 +54,15 @@ void App_Run(void)
     while(status ==  AR_STATUS_OK)
     {   
 
+
         if (VL53L0X_Sensor.vl53l0x_data_ready == 1)
         {
             VL53L0X_Sensor.vl53l0x_data_ready = 0;
             status = vl53l0x_driver_get_Readings(&VL53L0X_Sensor);
             if (status == AR_STATUS_OK) 
             {
+                
+                status = servo_move(&servo_handle, 90 + PID_Compute(&beam_control, VL53L0X_Sensor.distance_mm));
                 
                 status = servo_move(&servo_handle, 90 + PID_Compute(&beam_control, VL53L0X_Sensor.distance_mm));
             }    
