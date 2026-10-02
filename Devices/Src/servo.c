@@ -29,13 +29,12 @@ SYS_ERRORS_t servo_init(Servo_Handle_t *servo_handle){
     if (status != AR_STATUS_OK) {
         return status;
     }
-    return servo_move(servo_handle, 90.0f);
+    return servo_move(servo_handle, 90.0f - SERVO_OFFSET_ANGLE);
 }
 
 
 SYS_ERRORS_t servo_move(Servo_Handle_t *servo_handle, float angle)
 {
-    
     if (angle < 0.0f) angle = 0.0f;
     if (angle > 180.0f) angle = 180.0f;
     servo_handle->servoAngle = angle;

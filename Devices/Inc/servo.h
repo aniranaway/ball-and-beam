@@ -13,7 +13,7 @@
 
 #define     SERVO_ZERO_PULSE            500
 #define     SERVO_END_PULSE             2500
-
+#define     SERVO_OFFSET_ANGLE          (float) 4.0f
 /**
  * @brief Servo struct handle.
  */

@@ -3,7 +3,7 @@
     *@brief     Header file that contains pid structs and function declarations
     *@author    Anish Rangarajan
 */
-
+#include <stdint.h>
 
 #ifndef PID_H
 #define PID_H
@@ -17,8 +17,11 @@ typedef struct {
     float Ki;
     float Kd;
 
+    float low_pass_filter_alpha;
+
     float set_point;
     float prev_measure;
+    float prev_derivative;
     float error;
 } PID_Handle_t;
 
@@ -33,7 +36,7 @@ typedef struct {
  * @return  float         Control logic
  */
 
-float PID_Compute(PID_Handle_t *pid_handle, float measurement);
+float PID_Compute(PID_Handle_t *pid_handle, float measurement, uint32_t elapsed_time);
 
 
 
