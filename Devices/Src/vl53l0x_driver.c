@@ -55,11 +55,16 @@ SYS_ERRORS_t vl53l0x_driver_get_Readings(VL53L0X_Dev_t *vl53l0x_handle){
     status = VL53L0X_GetRangingMeasurementData(vl53l0x_handle, &RangingMeasurementData);
     if(status!= VL53L0X_ERROR_NONE){return AR_STATUS_ERROR;}
     
-    vl53l0x_handle->distance_mm = RangingMeasurementData.RangeMilliMeter;
+    if(RangingMeasurementData.RangeMilliMeter < 8190)
+    {
+        if(!vl53l0x_handle->distance_mm_filtered)
+            vl53l0x_handle->distance_mm_filtered = RangingMeasurementData.RangeMilliMeter;
+        
+        vl53l0x_handle->distance_mm_filtered = (vl53l0x_handle->sensor_alpha * vl53l0x_handle->distance_mm_filtered) + ((1.0f - vl53l0x_handle->sensor_alpha) * (float)RangingMeasurementData.RangeMilliMeter);
 
-   status = VL53L0X_ClearInterruptMask(vl53l0x_handle, VL53L0X_REG_SYSTEM_INTERRUPT_GPIO_NEW_SAMPLE_READY);
-    if(status != VL53L0X_ERROR_NONE) { return AR_STATUS_ERROR; }
-
+    status = VL53L0X_ClearInterruptMask(vl53l0x_handle, VL53L0X_REG_SYSTEM_INTERRUPT_GPIO_NEW_SAMPLE_READY);
+        if(status != VL53L0X_ERROR_NONE) { return AR_STATUS_ERROR; }
+   }     
     return AR_STATUS_OK; 
 }
 

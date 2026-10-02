@@ -61,7 +61,9 @@ typedef struct {
     volatile uint8_t vl53l0x_data_ready;
     void      *bsp_handle;
     uint16_t  distance_mm;
+    float     distance_mm_filtered;
     uint32_t  vl53l0x_last_tick;
+    float     sensor_alpha;
 } VL53L0X_Dev_t;
 
 

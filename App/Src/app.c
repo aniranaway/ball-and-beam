@@ -19,7 +19,7 @@ BSP_UART_Handle_t   uart_handle   = {.uart_bus= UART_BUS_2};
 BSP_Timer_Handle_t  timer_handle  = {.timer_bus = TIMER_BUS_2, .pwm_channel = PWM_CHANNEL_1};
 
 /* Device Declarations */
-VL53L0X_Dev_t   VL53L0X_Sensor  = {.bsp_handle = &i2c_handle, .vl53l0x_data_ready = 0};
+VL53L0X_Dev_t   VL53L0X_Sensor  = {.bsp_handle = &i2c_handle, .vl53l0x_data_ready = 0, .distance_mm_filtered = 0, .sensor_alpha=0.7f};
 Servo_Handle_t  servo_handle    = {.timerHandle = &timer_handle};
 
 /* Variable Declarations */
@@ -27,10 +27,8 @@ uint32_t last_log_time = 0;
 SYS_ERRORS_t status = AR_STATUS_OK;
 
 
-/*Control Declarations*/ //0.45 , 0.15
-PID_Handle_t beam_control = {.Kp = 0.45f, .Kd = 0.15f, .set_point = 80, .prev_measure = 0.0f, .low_pass_filter_alpha = 0.7f};
-static float filtered_distance = 0.0f;
-float sensor_alpha = 0.7f;
+/*Control Declarations*/ 
+PID_Handle_t beam_control = {.Kp = 0.45f, .Kd = 0.15f, .set_point = 80.0f, .prev_measure = 0.0f, .low_pass_filter_alpha = 0.7f};
 
 void App_Init(void)
 {
@@ -66,14 +64,11 @@ void App_Run(void)
             if (status == AR_STATUS_OK) 
             {
                 SYS_ERRORS_t read_status = vl53l0x_driver_get_Readings(&VL53L0X_Sensor);
-                if (read_status == AR_STATUS_OK && VL53L0X_Sensor.distance_mm < 8190)
+                if (read_status == AR_STATUS_OK && VL53L0X_Sensor.distance_mm_filtered < 8190)
                 {
-                    if (filtered_distance == 0.0f) {
-                        filtered_distance = (float)VL53L0X_Sensor.distance_mm;
-                    }
-                    filtered_distance = (sensor_alpha * filtered_distance) + ((1.0f - sensor_alpha) * (float)VL53L0X_Sensor.distance_mm);
+                    
                     uint32_t elapsed_time = bsp_get_millis() - VL53L0X_Sensor.vl53l0x_last_tick;
-                    status = servo_move(&servo_handle, 90 - SERVO_OFFSET_ANGLE + PID_Compute(&beam_control, filtered_distance, elapsed_time));       
+                    status = servo_move(&servo_handle, 90 - SERVO_OFFSET_ANGLE + PID_Compute(&beam_control, VL53L0X_Sensor.distance_mm_filtered, elapsed_time));       
                     VL53L0X_Sensor.vl53l0x_last_tick = bsp_get_millis();
                 }
                 
@@ -84,8 +79,8 @@ void App_Run(void)
         if (bsp_get_millis() - last_log_time >= 100)
         {
             last_log_time = bsp_get_millis();
-            char tx_buffer[50];
-            uint16_t len = snprintf(tx_buffer, sizeof(tx_buffer), "Distance: %u mm\r\n", VL53L0X_Sensor.distance_mm);
+            char tx_buffer[80];
+            uint16_t len = snprintf(tx_buffer, sizeof(tx_buffer), "Distance: %0.2f mm | Kp: %0.2f | Kd: %0.2f | Set Point: %0.2f\r\n", VL53L0X_Sensor.distance_mm_filtered, beam_control.Kp, beam_control.Kd, beam_control.set_point);
             bsp_uart_transmit(&uart_handle, tx_buffer, len);
         }
     }
