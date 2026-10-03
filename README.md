@@ -4,6 +4,14 @@ Designed from the ground up to **mimic an industry-style, production-grade embed
 
 ---
 
+## Mechanical Design & CAD Overview
+
+The mechanical assembly is fully custom-designed to house the servo actuator linkage, central pivot mount, and the VL53L0X Time-of-Flight sensor at the track edge:
+
+![Ball-and-Beam CAD Assembly Render](References/Assembly.jpg)
+
+---
+
 ## Key Features
 
 * **Custom PID Controller**: Implements time-weighted integration (`dt`), a low-pass filtered derivative term to eliminate sensor noise jitter, and division-by-zero protection.
