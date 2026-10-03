@@ -1,0 +1,24 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug STM32 Discovery (OpenOCD)",
+      "type": "cortex-debug",
+      "request": "launch",
+      "servertype": "openocd",
+      "device": "STM32L476VG",
+      "interface": "swd",
+      "executable": "${workspaceFolder}/build/Debug/Ball_Balance_Beam.elf",
+      "configFiles": [
+        "interface/stlink.cfg",
+        "target/stm32l4x.cfg"
+      ],
+      
+      "runToEntryPoint": "main",
+      "liveWatch": {
+          "enabled": true,
+          "samplesPerSecond": 4
+      }
+    }
+  ]
+}
