@@ -60,16 +60,46 @@ Distance: 77.34 mm | Set Point: 77.00 | Error: -0.34 | Integrator: -40.35
 
 ---
 
-## Getting Started
+## Getting Started & Prerequisites
+
+To successfully build, flash, and debug this project locally, your development environment requires a command-line-driven embedded toolchain. 
+
+### 1. Required Toolset & Extensions
+* **VS Code** with essential extensions:
+  * *STM32Cube Extension* (or *Cortex-Debug*)
+  * *CMake Tools*
+  * *C/C++*
+* **STM32CubeCLT (STM32 Cube Command-Line Toolset)**: Bundles the GNU Arm Embedded Toolchain (`arm-none-eabi-gcc`), programmer tools, and Ninja.
+* **CMake**: Build system generator.
+
+### 2. System PATH Configuration
+For your terminal, CMake, and VS Code to compile the firmware without `command not found` errors, ensure the following directories are added to your operating system's **PATH** environment variable:
+
+* **GNU Arm Toolchain**: `C:\ST\STM32CubeCLT\GNU-armeabi\bin` *(Provides `arm-none-eabi-gcc` cross-compiler)*
+* **Ninja Build Tool**: `C:\ST\STM32CubeCLT\Ninja\bin` *(Fast-fire build runner)*
+* **CMake Binaries**: `C:\Program Files\CMake\bin` *(Project preset generation)*
+* **CubeProgrammer CLI**: `C:\ST\STM32CubeCLT\STM32CubeProgrammer\bin` *(Board flashing utilities)*
+
+> **Verification:** Restart your terminal and verify your environment is configured correctly by running:
+> ```bash
+> cmake --version
+> ninja --version
+> arm-none-eabi-gcc --version
+> ```
+
+---
+
+## Building and Flashing
 
 1. **Clone the Repository**:
    ```bash
    git clone [https://github.com/aniranaway/ball-and-beam.git](https://github.com/aniranaway/ball-and-beam.git)
+   cd ball-and-beam
    ```
-2. **Open in VS Code**: Open the workspace directory with CMake and Ninja configured for ARM-none-eabi.
-3. **Build the Project**:
+2. **Configure & Build via CMake**:
    ```bash
    cmake --preset default
    cmake --build build
    ```
-4. **Flash & Run**: Flash the resulting binary to your STM32L475VG using STM32CubeProgrammer or your preferred debugger.
+3. **Debug & Flash**: 
+   Connect your STM32L475VG board via ST-Link. Ensure your `.vscode/launch.json` file points to the compiled artifact (`build/ball-and-beam.elf`), then launch the debug task inside VS Code or flash directly using STM32CubeProgrammer.
