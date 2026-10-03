@@ -18,10 +18,12 @@ typedef struct {
     float Kd;
 
     float low_pass_filter_alpha;
-
+    float integrator;
+    float integrator_limit;
     float set_point;
     float prev_measure;
     float prev_derivative;
+    float prev_error;
     float error;
 } PID_Handle_t;
 

@@ -28,7 +28,7 @@ SYS_ERRORS_t status = AR_STATUS_OK;
 
 
 /*Control Declarations*/ 
-PID_Handle_t beam_control = {.Kp = 0.45f, .Kd = 0.15f, .set_point = 80.0f, .prev_measure = 0.0f, .low_pass_filter_alpha = 0.7f};
+PID_Handle_t beam_control = {.Kp = 0.42f, .Ki = 0.3f, .Kd = 0.16f, .set_point = 77.0f, .prev_measure = 0.0f, .low_pass_filter_alpha = 0.7f, .integrator_limit = 15.0f};
 
 void App_Init(void)
 {
@@ -55,8 +55,6 @@ void App_Run(void)
     
     while(status ==  AR_STATUS_OK)
     {   
-
-
         if (VL53L0X_Sensor.vl53l0x_data_ready == 1)
         {
             VL53L0X_Sensor.vl53l0x_data_ready = 0;
@@ -80,7 +78,7 @@ void App_Run(void)
         {
             last_log_time = bsp_get_millis();
             char tx_buffer[80];
-            uint16_t len = snprintf(tx_buffer, sizeof(tx_buffer), "Distance: %0.2f mm | Kp: %0.2f | Kd: %0.2f | Set Point: %0.2f\r\n", VL53L0X_Sensor.distance_mm_filtered, beam_control.Kp, beam_control.Kd, beam_control.set_point);
+            uint16_t len = snprintf(tx_buffer, sizeof(tx_buffer), "Distance: %0.2f mm |Set Point: %0.2f | Error: %0.2f | Integrator: %0.2f\r\n", VL53L0X_Sensor.distance_mm_filtered, beam_control.set_point, beam_control.prev_error, beam_control.integrator);
             bsp_uart_transmit(&uart_handle, tx_buffer, len);
         }
     }
